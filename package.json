@@ -4,7 +4,7 @@
   "displayName": "UniGame Ecs Proto Tool",
   "description": "Tooling for Leo Ecs Proto",
   "unity": "2023.2",
-  "version": "2025.0.9",
+  "version": "2025.0.10",
   "license": "MIT",
   "keywords": [
     "ecs",
