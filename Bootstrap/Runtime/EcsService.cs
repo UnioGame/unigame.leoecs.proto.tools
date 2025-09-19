@@ -24,6 +24,7 @@
     using UniGame.Runtime.Rx;
     using UniGame.Runtime.Utils;
     using UnityEngine;
+    using Debug = UnityEngine.Debug;
 
     public class EcsService : GameService, IEcsService
     {
@@ -266,9 +267,14 @@
             foreach (var aspect in aspectsData.aspects)
             {
                 if (!aspect.enabled) continue;
-                var aspectType = (Type)aspect.aspectType;
-                
-                if (aspectType == null) continue;
+
+                var stype = aspect.aspectType;
+                var aspectType = (Type)stype;
+                if (aspectType == null)
+                {
+                    Debug.LogError($"EcsService: missing Aspect of type {stype.fullTypeName}");
+                    continue;
+                }
                 
                 if (aspectType.IsGenericType && !aspectType.IsConstructedGenericType)
                     continue;

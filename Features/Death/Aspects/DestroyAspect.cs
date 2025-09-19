@@ -6,8 +6,7 @@
     using Leopotam.EcsProto.QoL;
     using UniGame.LeoEcs.Bootstrap;
     using UniGame.LeoEcs.Bootstrap.Runtime.Attributes;
-    using UniGame.LeoEcs.Shared.Extensions;
-
+    using UnityEngine.Scripting;
     /// <summary>
     /// destroy entity aspect
     /// </summary>
@@ -20,6 +19,7 @@
 #endif
     [Serializable]
     [ECSDI]
+    [Preserve]
     public class DestroyAspect : EcsAspect
     {
         public ProtoPool<DestroyComponent> Destroy;
