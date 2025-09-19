@@ -3,7 +3,7 @@
     using System;
     using Leopotam.EcsProto;
     using UniGame.LeoEcs.Proto;
-    
+
     /// <summary>
     /// destroy target entity without pooling
     /// </summary>
@@ -15,15 +15,8 @@
     [Il2CppSetOption(Option.DivideByZeroChecks, false)]
 #endif
     [Serializable]
-    public struct DestroySelfRequest : IProtoAutoReset<DestroySelfRequest>
+    public struct DestroySelfRequest
     {
-        public bool ForceDestroy;
         
-        public void SetHandlers(IProtoPool<DestroySelfRequest> pool) => pool.SetResetHandler(AutoReset);
-        
-        public void AutoReset(ref DestroySelfRequest c)
-        {
-            c.ForceDestroy = false;
-        }
     }
 }
