@@ -272,7 +272,9 @@
                 var aspectType = (Type)stype;
                 if (aspectType == null)
                 {
+#if GAME_DEBUG
                     Debug.LogError($"EcsService: missing Aspect of type {stype.fullTypeName}");
+#endif
                     continue;
                 }
                 
