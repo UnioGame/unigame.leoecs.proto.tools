@@ -1,6 +1,7 @@
 namespace UniGame.Ecs.Bootstrap.Runtime.Config
 {
     using System.Collections.Generic;
+    using System.Linq;
     using Game.Ecs.Core;
     using LeoEcs.Bootstrap;
     using LeoEcs.Bootstrap.Runtime.PostInitialize;
@@ -148,6 +149,20 @@ namespace UniGame.Ecs.Bootstrap.Runtime.Config
             
             this.MarkDirty();
 
+#endif
+        }
+
+#if ODIN_INSPECTOR || TRI_INSPECTOR
+        [Button]
+#endif
+        public void AddAspectsIntoLinkFile()
+        {
+#if UNITY_EDITOR
+            var aspects = aspectsData.aspects;
+            var types = aspects
+                .Select(x => x.aspectType.Type)
+                .Distinct();
+            EcsLinkXmlGenerator.GenerateLinkXml(types);
 #endif
         }
         
