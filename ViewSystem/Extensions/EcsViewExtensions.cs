@@ -95,6 +95,20 @@ namespace UniGame.LeoEcs.ViewSystem.Extensions
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryGetViewModel<TModel>(this ProtoWorld world, ProtoEntity entity, out TModel model)
+        {
+            model = default;
+            if (!world.HasComponent<ViewModelComponent>(entity))
+                return false;
+
+            ref var viewModelComponent = ref world.GetComponent<ViewModelComponent>(entity);
+            if (viewModelComponent.Model is not TModel viewModel) return false;
+
+            model = viewModel;
+            return true;
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TModel GetViewModel<TModel>(this ProtoWorld world, ProtoEntity entity) 
             where TModel : class
         {
