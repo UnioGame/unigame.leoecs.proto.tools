@@ -38,7 +38,7 @@
             AddViewModelData(world,ref packedEntity, model);
             
             await _viewSystem
-                .InitializeView(view, model)
+                .InitializeView(view, model,null)
                 .AttachExternalCancellation(_lifeTime.Token);
         }
 
