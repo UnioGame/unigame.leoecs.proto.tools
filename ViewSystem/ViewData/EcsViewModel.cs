@@ -7,7 +7,7 @@ using UnityEngine;
 namespace UniGame.LeoEcs.ViewSystem.Converters
 {
     [Serializable]
-    public class EcsViewModel : ViewModelBase
+    public class EcsViewModel : ViewModel
     {
         public static IViewModel Model = new EcsViewModel();
         

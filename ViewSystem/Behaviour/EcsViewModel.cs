@@ -7,7 +7,7 @@
     using UiSystem.Runtime;
 
     [Serializable]
-    public class EcsViewModel : ViewModelBase, IEcsViewModel
+    public class EcsViewModel : ViewModel, IEcsViewModel
     {
 
         public virtual async UniTask InitializeAsync(ProtoWorld world, IContext context)
