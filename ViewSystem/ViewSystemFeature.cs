@@ -17,6 +17,7 @@ namespace UniGame.LeoEcs.ViewSystem
     using Shared.Extensions;
     using ViewSystem;
     using UiSystem.Runtime.Settings;
+    using UiToolkit.Systems;
     using UniGame.ViewSystem.Runtime;
     using UnityEngine;
     using UnityEngine.AddressableAssets;
@@ -67,6 +68,7 @@ namespace UniGame.LeoEcs.ViewSystem
             ecsSystems.Add(new UpdateViewOrderSystem());
             ecsSystems.Add(new CreateViewSystem());
             ecsSystems.Add(new MarkViewAsInitializedSystem());
+            ecsSystems.Add(new SyncUiToolkitElementsSystem());
             
             ecsSystems.Add(new InitializeViewsSystem());
             ecsSystems.Add(new InitializeModelOfViewsSystem());

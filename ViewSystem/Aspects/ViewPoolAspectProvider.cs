@@ -22,6 +22,9 @@
     {
         public static readonly Type ViewComponentType = typeof(ViewComponent<>);
 
+        public static readonly Type UiToolkitElementComponentType =
+            typeof(UiToolkit.Components.UiToolkitElementComponent<>);
+        
 #if ODIN_INSPECTOR
         [Searchable(FilterOptions = SearchFilterOptions.ISearchFilterableInterface)]
 #endif
@@ -51,6 +54,23 @@
                 if(modelType.IsInterface || modelType.IsAbstract) continue;
                 var genericType = ViewComponentType.MakeGenericType(modelType);
                 var poolGenericType = poolType.MakeGenericType(genericType);
+                poolTypes.Add(poolGenericType);
+            }
+            
+            var elementBaseType = typeof(UiToolkit.EcsUiToolkitElement);
+            var elementTypes = TypeCache.GetTypesDerivedFrom(elementBaseType);
+
+            foreach (var elementType in elementTypes)
+            {
+                if (elementType.IsInterface || elementType.IsAbstract)
+                    continue;
+
+                var componentType =
+                    UiToolkitElementComponentType.MakeGenericType(elementType);
+
+                var poolGenericType =
+                    poolType.MakeGenericType(componentType);
+
                 poolTypes.Add(poolGenericType);
             }
         }

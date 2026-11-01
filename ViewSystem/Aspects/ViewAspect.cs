@@ -8,6 +8,7 @@
     using Game.Modules.UnioModules.UniGame.LeoEcsLite.LeoEcs.ViewSystem.Components.Events;
     using Leopotam.EcsProto;
     using Shared.Components;
+    using UiToolkit.Components;
 
     /// <summary>
     /// View Aspect
@@ -35,6 +36,10 @@
         public ProtoPool<TransformPositionComponent> Position;
         
         public ProtoPool<ViewContainerComponent> ContainerView;
+        
+        // UiToolkit
+        public ProtoPool<UiToolkitElementComponent> UiToolkitElement;
+        public ProtoPool<UiToolkitElementsRegistryComponent> UiToolkitElementsRegistry;
         
         //events
         public ProtoPool<ViewStatusSelfEvent> StatusChanged;

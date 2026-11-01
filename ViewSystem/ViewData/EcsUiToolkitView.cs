@@ -7,6 +7,7 @@ namespace UniGame.LeoEcs.ViewSystem.Converters
     using Converter.Runtime.Abstract;
     using Leopotam.EcsProto;
     using UiSystem.Runtime.UiToolkit;
+    using UiToolkit;
     using UniGame.ViewSystem.Runtime;
     using UnityEngine;
 
@@ -46,8 +47,9 @@ namespace UniGame.LeoEcs.ViewSystem.Converters
 
         public void OnEntityDestroy(ProtoWorld world, ProtoEntity entity)
         {
-            _dataConverter.OnEntityDestroy(world, entity);
+            UiToolkitElementsRegistry.Release(world, entity);
 
+            _dataConverter.OnEntityDestroy(world, entity);
             EntityDestroy(world, entity);
         }
 
