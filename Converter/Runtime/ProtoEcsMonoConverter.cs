@@ -270,7 +270,7 @@ namespace UniGame.LeoEcs.Converter.Runtime
             if (!_packedEntity.Unpack(_world, out var targetEntity)) return;
             
             //notify converters about destroy
-            foreach (var converter in _converters)
+            foreach (var converter in UpdateMonoConverter())
             {
                 if (converter is IConverterEntityDestroyHandler destroyHandler)
                     destroyHandler.OnEntityDestroy(_world, targetEntity);
