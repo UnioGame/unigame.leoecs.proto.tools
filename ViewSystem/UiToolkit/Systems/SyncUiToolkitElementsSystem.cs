@@ -2,6 +2,7 @@
 {
     using System;
     using Aspects;
+    using Components;
     using Bootstrap.Runtime.Attributes;
     using Leopotam.EcsProto;
     using Leopotam.EcsProto.QoL;
@@ -10,7 +11,8 @@
     using ViewSystem.Extensions;
 
     /// <summary>
-    /// 
+    /// Registers UI Toolkit elements of every view as entities: the whole tree when the root appears,
+    /// then single elements added to or removed from the tree while the view is open.
     /// </summary>
 #if ENABLE_IL2CPP
     using Unity.IL2CPP.CompilerServices;
@@ -28,6 +30,10 @@
 
         private ProtoIt _viewFilter = ViewIt
             .ViewChain()
+            .End();
+
+        private ProtoIt _registryFilter = It
+            .Chain<UiToolkitElementsRegistryComponent>()
             .End();
 
         public void Run()
@@ -49,6 +55,54 @@
 
                 registryComponent.Value.Rebuild(_world, viewEntity, root);
             }
+
+            ReleaseDetachedElements();
+            RegisterAttachedElements();
+        }
+
+        private void ReleaseDetachedElements()
+        {
+            var detached = UiToolkitElementsTracker.Detached;
+
+            foreach (var element in detached)
+            {
+                // re-attached in the same frame: keeps its entity
+                if (element.panel != null)
+                    continue;
+
+                foreach (var viewEntity in _registryFilter)
+                {
+                    var registry = _viewAspect.UiToolkitElementsRegistry.Get(viewEntity).Value;
+                    if (registry != null && registry.Release(_world, viewEntity, element))
+                        break;
+                }
+            }
+
+            detached.Clear();
+        }
+
+        // Elements of a view whose registry is not built yet are skipped: Rebuild picks them up with the whole tree.
+        private void RegisterAttachedElements()
+        {
+            var attached = UiToolkitElementsTracker.Attached;
+
+            foreach (var element in attached)
+            {
+                if (element.panel == null || element.Entity.Unpack(_world, out _))
+                    continue;
+
+                foreach (var viewEntity in _registryFilter)
+                {
+                    var registry = _viewAspect.UiToolkitElementsRegistry.Get(viewEntity).Value;
+                    if (registry?.Root == null || !registry.Root.Contains(element))
+                        continue;
+
+                    registry.Register(_world, viewEntity, element);
+                    break;
+                }
+            }
+
+            attached.Clear();
         }
     }
 }

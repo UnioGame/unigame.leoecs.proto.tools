@@ -25,7 +25,7 @@
                 .ForEach(element => Register(world, rootEntity, element));
         }
 
-        private ProtoEntity Register(ProtoWorld world, ProtoEntity rootEntity, EcsUiToolkitElement element)
+        internal ProtoEntity Register(ProtoWorld world, ProtoEntity rootEntity, EcsUiToolkitElement element)
         {
             if (element.Entity.Unpack(world, out var existingEntity))
                 return existingEntity;
@@ -53,45 +53,63 @@
             return entity;
         }
         
+        // Frees the entity of an element removed from the tree while its view stays open.
+        internal bool Release(ProtoWorld world, ProtoEntity rootEntity, EcsUiToolkitElement element)
+        {
+            for (var i = 0; i < _entities.Count; i++)
+            {
+                if (_entities[i] != element.Entity)
+                    continue;
+
+                ReleaseEntity(world, rootEntity, _entities[i]);
+                _entities.RemoveAt(i);
+                return true;
+            }
+
+            return false;
+        }
+
         private void ReleaseElements(ProtoWorld world, ProtoEntity rootEntity)
         {
             for (var i = _entities.Count - 1; i >= 0; i--)
-            {
-                var packedEntity = _entities[i];
-
-                if (!packedEntity.Unpack(world, out var entity))
-                    continue;
-
-                if (world.HasComponent<UiToolkitElementComponent>(entity))
-                {
-                    ref var component =
-                        ref world.GetComponent<UiToolkitElementComponent>(entity);
-
-                    var element = component.Element;
-
-                    if (element != null)
-                    {
-                        foreach (var converter in element.Converters)
-                        {
-                            if (converter is { IsEnabled: true } &&
-                                converter is IConverterEntityDestroyHandler handler)
-                            {
-                                handler.OnEntityDestroy(world, entity);
-                            }
-                        }
-
-                        element.Entity = default;
-                    }
-                }
-
-                RemoveOwnerLink(world, rootEntity, packedEntity);
-                world.DelEntity(entity);
-            }
+                ReleaseEntity(world, rootEntity, _entities[i]);
 
             _entities.Clear();
             Root = null;
         }
+
+        private static void ReleaseEntity(ProtoWorld world, ProtoEntity rootEntity, ProtoPackedEntity packedEntity)
+        {
+            if (!packedEntity.Unpack(world, out var entity))
+                return;
+
+            if (world.HasComponent<UiToolkitElementComponent>(entity))
+            {
+                ref var component =
+                    ref world.GetComponent<UiToolkitElementComponent>(entity);
+
+                var element = component.Element;
+
+                if (element != null)
+                {
+                    foreach (var converter in element.Converters)
+                    {
+                        if (converter is { IsEnabled: true } &&
+                            converter is IConverterEntityDestroyHandler handler)
+                        {
+                            handler.OnEntityDestroy(world, entity);
+                        }
+                    }
+
+                    element.Entity = default;
+                }
+            }
+
+            RemoveOwnerLink(world, rootEntity, packedEntity);
+            world.DelEntity(entity);
+        }
         
+
         private static void RemoveOwnerLink(ProtoWorld world, ProtoEntity rootEntity, ProtoPackedEntity child)
         {
             if (!world.HasComponent<OwnerComponent>(rootEntity))

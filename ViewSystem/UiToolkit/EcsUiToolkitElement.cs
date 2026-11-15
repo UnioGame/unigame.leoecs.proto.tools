@@ -6,6 +6,7 @@
     using Leopotam.EcsProto;
     using Leopotam.EcsProto.QoL;
     using Shared.Extensions;
+    using UnityEngine;
     using UnityEngine.UIElements;
 
     [UxmlElement(visibility = LibraryVisibility.Hidden)]
@@ -15,6 +16,15 @@
         public List<EcsComponentConverter> Converters { get; set; } = new();
 
         public ProtoPackedEntity Entity { get; internal set; }
+
+        protected EcsUiToolkitElement()
+        {
+            if (!Application.isPlaying)
+                return;
+
+            RegisterCallback<AttachToPanelEvent>(_ => UiToolkitElementsTracker.Attached.Add(this));
+            RegisterCallback<DetachFromPanelEvent>(_ => UiToolkitElementsTracker.Detached.Add(this));
+        }
 
         internal abstract void AddTypeComponent(ProtoWorld world, ProtoEntity entity);
     }
