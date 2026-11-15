@@ -20,12 +20,17 @@
         
         public override VisualElement contentContainer => _button;
 
+        public bool IsHovered { get; private set; }
+
         public EcsButtonElement()
         {
             _button = new Button(OnClick);
             _button.AddToClassList(ButtonClassName);
 
             hierarchy.Add(_button);
+
+            RegisterCallback<PointerEnterEvent>(_ => IsHovered = true);
+            RegisterCallback<PointerLeaveEvent>(_ => IsHovered = false);
         }
 
         public bool TakeClick()
